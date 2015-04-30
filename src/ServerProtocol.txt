@@ -1,0 +1,17 @@
+Protocol for Server messages
+
+
+function ::= addShip
+	| attack
+	| respond
+
+addShip ::= addShip playerName orientation X Y shipLength
+attack ::= attack playerName X Y
+respond ::= respond playerName X Y result
+
+orientation ::= -1 (UP) | -2 (DOWN) | -3 (LEFT)| -4 (RIGHT)
+X 	    ::= INT[0, 10)
+Y 	    ::= INT[0, 10)
+shiplength  ::= 2 | 3 | 4 | 5
+result 	    ::= "hit!" | "miss!"
+
