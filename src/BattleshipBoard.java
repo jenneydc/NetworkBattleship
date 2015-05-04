@@ -2,15 +2,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import javax.swing.JOptionPane;
 
 
 public class BattleshipBoard
 {
 	//representation of a battleship board (rows of columns i.e. [x][y])
 	int[][] board;
-        
-        // graphical representaion of the board
-        BattleshipGUI gui;
 	
 	//keeps score for one game
 	private int score;
@@ -41,13 +39,10 @@ public class BattleshipBoard
 	 */
 	public BattleshipBoard() {
 		//instantiate empty board
-		board = new int[10][10];
+		board = new int[11][11];
 		for(int[] row : board) {
                     Arrays.fill(row, empty);
 		}
-                
-                //instantiate gui
-                gui = new BattleshipGUI(this);
 	}
 	
 	/*
@@ -76,40 +71,49 @@ public class BattleshipBoard
 				case BattleshipBoard.UP:
 					for(int i=0; i<shipLength; i++) {
 						//make sure the space isn't already occupied
-						if(board[startX][startY+i] == occupied) {
-							throw new Exception("space "+alpha(startX)+", "+(startY+i)+" is already occupied!");
-						}
-						board[startX][startY+i] = occupied;
+						if(board[startX-i][startY] == occupied) {
+                                                    JOptionPane.showInternalMessageDialog(null,
+                                                            "space "+BattleshipGame.alpha(startX)+", "+(startY+i)+" is already occupied!");
+						} else if(startX-i > 10 || startX-i < 1) {
+                                                    throw new Exception("cannot go off the board!");
+                                                }
+						board[startX-i][startY] = occupied;
 					}
 					break;
 				
 				case BattleshipBoard.DOWN:
 					for(int i=0; i<shipLength; i++) {
 						//make sure the space isn't already occupied
-						if(board[startX][startY-i] == occupied) {
-							throw new Exception("space "+alpha(startX)+", "+(startY-i)+" is already occupied!");
-						}
-						board[startX][startY-i] = occupied;
+						if(board[startX+i][startY] == occupied) {
+							throw new Exception("space "+BattleshipGame.alpha(startX)+", "+(startY-i)+" is already occupied!");
+						} else if(startX+i > 10 || startX+i < 1) {
+                                                    throw new Exception("cannot go off the board!");
+                                                }
+						board[startX+i][startY] = occupied;
 					}
 					break;
 				
 				case BattleshipBoard.LEFT:
 					for(int i=0; i<shipLength; i++) {
 						//make sure the space isn't already occupied
-						if(board[startX-i][startY] == occupied) {
-							throw new Exception("space "+alpha(startX-i)+", "+startY+" is already occupied!");
-						}
-						board[startX-i][startY] = occupied;
+						if(board[startX][startY-i] == occupied) {
+							throw new Exception("space "+BattleshipGame.alpha(startX-i)+", "+startY+" is already occupied!");
+						} else if(startY-i > 10 || startY-i < 1) {
+                                                    throw new Exception("cannot go off the board!");
+                                                }
+						board[startX][startY-i] = occupied;
 					}
 					break;
 				
 				case BattleshipBoard.RIGHT:
 					for(int i=0; i<shipLength; i++) {
 						//make sure the space isn't already occupied
-						if(board[startX+i][startY] == occupied) {
-							throw new Exception("space "+alpha(startX+i)+", "+startY+" is already occupied!");
-						}
-						board[startX+i][startY] = occupied;
+						if(board[startX][startY+i] == occupied) {
+							throw new Exception("space "+BattleshipGame.alpha(startX+i)+", "+startY+" is already occupied!");
+						} else if(startY+i > 10 || startY+i < 1) {
+                                                    throw new Exception("cannot go off the board!");
+                                                }
+						board[startX][startY+i] = occupied;
 					}
 					break;
 				
@@ -122,15 +126,6 @@ public class BattleshipBoard
 			return false;
 		}
 	};
-	
-	
-	/* 
-	 * helper method for getting alphabetic value of an x value
-	 * 
-	 */
-	private String alpha(int row) {
-		return row > 0 && row < 10 ? String.valueOf((char)(row + 64)) : null;
-	}
 	
 	public void setPlayerName(String newName) {
 		this.playerName = newName;

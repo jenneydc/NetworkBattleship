@@ -1,6 +1,8 @@
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -12,28 +14,53 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class BattleshipGUI extends javax.swing.JPanel {
 
     //arrays of this player attacks for testing
-        //int[][] board = new int[10][10];
+        //int[][] oppBoard = new int[10][10];
     
     //the game this gui represents
-        BattleshipBoard board;
+        BattleshipBoard playBoard;
+        BattleshipBoard oppBoard;
+        
+    //so we know which board matches which table
+        Map<JTable, BattleshipBoard> gui2Board;
     
     /**
      * Creates new form BattleshipGUI
      */
     public BattleshipGUI() {
         initComponents();
+        setMap();
         setRenderer();
         
         JFrame frame = new JFrame();
         frame.setContentPane(this);
         frame.pack();
         frame.setVisible(true);
+        frame.show();
     }
     
-    public BattleshipGUI(BattleshipBoard board) {
-        this.board = board;
+    public BattleshipGUI(BattleshipBoard playBoard, BattleshipBoard oppBoard) {
+        this.playBoard = playBoard;
+        this.oppBoard = oppBoard;
         initComponents();
         setRenderer();
+        
+        setMap();
+        setRenderer();
+        
+        JFrame frame = new JFrame();
+        frame.setContentPane(this);
+        frame.pack();
+        frame.setVisible(true);
+        frame.show();
+    }
+    
+    /*
+     * set map associations
+     */
+    private void setMap() {
+        gui2Board = new HashMap<>();
+        gui2Board.put(playerBoard, playBoard);
+        gui2Board.put(opponentBoard, oppBoard);
     }
     
     /**
@@ -52,8 +79,8 @@ public class BattleshipGUI extends javax.swing.JPanel {
                     Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);    
 
                     Color cellColor = Color.LIGHT_GRAY;
-                        if(row >= 0 && row < 10 && column > 0 && column < 11) { 
-                            switch(board.board[row][column-1]) {
+                        if(row >= 0 && row <= 10 && column > 0 && column < 11) { 
+                            switch((table.equals(tables[0]) ? oppBoard : playBoard).board[row+1][column]) {
                                 case 1: cellColor = Color.DARK_GRAY;
                                     break;
                                 case 2: cellColor = Color.GREEN;
@@ -69,6 +96,13 @@ public class BattleshipGUI extends javax.swing.JPanel {
                         }
                     });
         }
+    }
+    
+    /*
+     * Set the message to the user on the GUI
+     */
+    public void setMessage(String message) {
+        messageOut.setText(message);
     }
     
     /*
@@ -97,6 +131,8 @@ public class BattleshipGUI extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         opponentBoard = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        messageOut = new javax.swing.JTextArea();
 
         playerBoard.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -231,6 +267,11 @@ public class BattleshipGUI extends javax.swing.JPanel {
         jLabel2.setFont(new java.awt.Font("Calibri Light", 0, 18)); // NOI18N
         jLabel2.setText("Opponent's Board");
 
+        messageOut.setColumns(20);
+        messageOut.setRows(5);
+        messageOut.setFocusable(false);
+        jScrollPane3.setViewportView(messageOut);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -241,23 +282,33 @@ public class BattleshipGUI extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel1)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -270,12 +321,12 @@ public class BattleshipGUI extends javax.swing.JPanel {
             int row = opponentBoard.rowAtPoint(evt.getPoint());
             int col = opponentBoard.columnAtPoint(evt.getPoint()) - 1;
 
-            if(row > 0 && row <= 10 && col > 0 && col <= 11) {
+            if(row >= 0 && row <= 10 && col >= 0 && col <= 11) {
                 //System.out.println(new Point(row, col));
  //------------------>send out guess to server <----------------------
                 //check guess VVVVVVV
-                if(board.board[row][col] < 2 ) {
-                    board.board[row][col] += 2;
+                if(oppBoard.board[row+1][col+1] < 2 ) {
+                    oppBoard.board[row+1][col+1] += 2;
                 }
                 opponentBoard.repaint();
             }
@@ -288,6 +339,8 @@ public class BattleshipGUI extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextArea messageOut;
     private javax.swing.JTable opponentBoard;
     private javax.swing.JTable playerBoard;
     // End of variables declaration//GEN-END:variables
