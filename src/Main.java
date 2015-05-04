@@ -37,5 +37,7 @@ public class Main {
                     "Battleship", 
                     JOptionPane.YES_NO_OPTION);
         } while(input == JOptionPane.YES_OPTION);
+        
+        //conn.closeInterface();
     }
 }

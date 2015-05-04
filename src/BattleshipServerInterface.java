@@ -21,4 +21,39 @@ public class BattleshipServerInterface
 				writer = new PrintWriter(socket.getOutputStream(), true);
 				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		}
+                
+                /*
+                 * sends name and other info to server for future identification
+                 */
+                public void preliminaries(String name) {
+                    
+                }
+                
+                /*
+                 * sends attack to server, 
+                 * returns BattleshipBoard.hit for hit, 
+                 *     or BattleshipBoard.miss for miss.
+                 * modifies oppboard.board, playBoard.board and .score appropriately
+                 */
+                public String attack(int x, int y, String playerName) {
+                    return "nada";
+                }
+                
+                /*
+                 * receives attack from the server,
+                 * sends back BattleshipBoard.hit for a hit, 
+                 *      or BattleshipBoard.miss for a miss
+                 * modifies oppboard.board, playBoard.board and .score appropriately
+                 */
+                public void receiveAttack(int x, int y){
+                    
+                }
+                
+                public void closeInterface() {
+                    try {
+                        socket.close();
+                    }catch(IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
 }
